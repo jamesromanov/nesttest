@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { compareSync, hashSync } from 'bcrypt';
 import { Transform } from 'class-transformer';
 import { now, Types } from 'mongoose';
+import { Course } from 'src/course/entities/course.entity';
 import { UserRole } from 'src/enums/user.role';
 import { Task } from 'src/task/entities/task.entity';
 
@@ -46,7 +47,10 @@ export class User {
   updatedAt: Date;
   // user tasks
   @Prop({ type: [Types.ObjectId], ref: Task.name })
-  tokens: Task[];
+  task: Task[];
+  // user courses
+  @Prop({ type: [Types.ObjectId], required: false, ref: 'Course' })
+  courses?: Course[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
