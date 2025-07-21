@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { Mongoose } from 'mongoose';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { APP_FILTER } from '@nestjs/core';
+import { GlobalExceptionFilter } from './filters/global.exception.filter';
 
 @Module({
   imports: [
@@ -17,6 +19,12 @@ import { ConfigModule } from '@nestjs/config';
     MongooseModule.forRoot(process.env.DATABASE_URL as string),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

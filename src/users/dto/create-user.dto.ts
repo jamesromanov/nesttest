@@ -11,6 +11,7 @@ import {
   Matches,
   min,
   Min,
+  MinLength,
 } from 'class-validator';
 import { UserRole } from 'src/enums/user.role';
 
@@ -22,7 +23,7 @@ export class CreateUserDto {
     description: 'User firstname',
   })
   @IsString()
-  @Min(2)
+  @MinLength(2)
   firstName: string;
 
   // user last name
@@ -32,7 +33,7 @@ export class CreateUserDto {
     description: 'User lastname',
   })
   @IsString()
-  @Min(2)
+  @MinLength(2)
   lastName: string;
 
   // user age
