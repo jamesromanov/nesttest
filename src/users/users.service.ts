@@ -32,14 +32,16 @@ export class UsersService {
   // get user by id
   async findOne(id: string) {
     const userCache = await this.redis.get(`user:id:${id}`);
+    console.log(userCache);
     if (userCache) JSON.parse(userCache);
-    const user = await this.userModel.findOne({ id });
+    const user = await this.userModel.findById(id);
     if (!user) throw new NotFoundException('No users found');
     await this.redis.set(`user:id:${id}`, user, 60);
     return user.toJSON();
   }
 
-  update(id: number, updateUserDto: any) {
+  //  update user by id
+  update(id: string, updateUserDto: any) {
     return `This action updates a #${id} user`;
   }
 

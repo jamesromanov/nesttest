@@ -5,14 +5,16 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './entities/user.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { RedisService } from 'src/redis/redis.service';
+import { RedisModule } from 'src/redis/redis.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     forwardRef(() => AuthModule),
+    RedisModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],
-  exports: [UsersService, RedisService],
+  exports: [UsersService],
 })
 export class UsersModule {}
