@@ -1,4 +1,4 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now } from 'mongoose';
 import { UserRole } from 'src/enums/user.role';
 
@@ -36,3 +36,5 @@ export class User {
   @Prop({ default: now() })
   updatedAt: Date;
 }
+
+export const UserSchema = SchemaFactory.createForClass(User);
