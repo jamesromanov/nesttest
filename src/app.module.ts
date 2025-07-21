@@ -14,8 +14,8 @@ import { GlobalExceptionFilter } from './filters/global.exception.filter';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    UsersModule,
     AuthModule,
+    UsersModule,
     MongooseModule.forRoot(process.env.DATABASE_URL as string),
   ],
   controllers: [AppController],

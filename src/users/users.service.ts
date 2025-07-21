@@ -7,6 +7,7 @@ import { CreateUserDto } from 'src/dtos/create-user.dto';
 import { NotFoundError } from 'rxjs';
 import { RedisService } from 'src/redis/redis.service';
 import { PassThrough } from 'stream';
+import { UpdateUserDto } from 'src/dtos/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -41,8 +42,17 @@ export class UsersService {
   }
 
   //  update user by id
-  update(id: string, updateUserDto: any) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const userExists = await this.findOne(id);
+    const upatedUser = await this.userModel.findByIdAndUpdate(
+      id,
+      updateUserDto,
+      {
+        new: true,
+      },
+    );
+
+    return upatedUser;
   }
 
   remove(id: number) {

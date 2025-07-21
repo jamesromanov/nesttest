@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { hashSync } from 'bcrypt';
+import { Transform } from 'class-transformer';
 import { now } from 'mongoose';
 import { UserRole } from 'src/enums/user.role';
 
@@ -19,7 +20,13 @@ export class User {
   @Prop({ required: true, unique: true })
   email: string;
   // user password
-  @Prop({ required: true, set: (value: string) => hashSync(value, 12) })
+
+  @Prop({
+    required: true,
+    set: (value: string) => {
+      if (value !== undefined) hashSync(value, 12);
+    },
+  })
   password: string;
   // user role
   @Prop({ enum: UserRole, type: String })

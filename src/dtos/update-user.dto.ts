@@ -1,3 +1,4 @@
+import { SerializeOptions } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
@@ -22,6 +23,7 @@ export class UpdateUserDto {
     description: 'User firstname',
   })
   @IsString()
+  @IsOptional()
   @MinLength(2)
   firstName?: string;
 
@@ -32,6 +34,7 @@ export class UpdateUserDto {
     description: 'User lastname',
   })
   @IsString()
+  @IsOptional()
   @MinLength(2)
   lastName?: string;
 
@@ -63,7 +66,7 @@ export class UpdateUserDto {
   // user password
   @ApiProperty({
     type: 'string',
-    default: 'StrongPassword:!',
+    example: 'StrongPassword:!',
     description: 'User password',
   })
   @IsOptional()
@@ -87,9 +90,11 @@ export class UpdateUserDto {
 
   // user refreshtoken
   @IsString()
+  @IsOptional()
   refreshToken?: string;
 
   // user status
   @IsBoolean()
-  isActive: boolean;
+  @IsOptional()
+  isActive?: boolean;
 }
