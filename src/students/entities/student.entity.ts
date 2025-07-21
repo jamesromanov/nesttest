@@ -1,4 +1,4 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now, Types } from 'mongoose';
 import { Course } from 'src/course/entities/course.entity';
 
@@ -19,3 +19,5 @@ export class Student {
   @Prop({ default: now() })
   updatedAt: Date;
 }
+
+export const StudentSchema = SchemaFactory.createForClass(Student);
