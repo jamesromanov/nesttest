@@ -6,6 +6,7 @@ import {
   isNotEmpty,
   IsNumber,
   IsOptional,
+  isString,
   IsString,
   IsStrongPassword,
   Matches,
@@ -13,6 +14,7 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
+import { Course } from 'src/course/entities/course.entity';
 import { UserRole } from 'src/enums/user.role';
 
 export class CreateUserDto {
@@ -85,4 +87,13 @@ export class CreateUserDto {
   @IsOptional()
   @IsEnum(UserRole, { message: 'Roles must be ADMIN or USER' })
   role?: UserRole;
+
+  @ApiProperty({
+    type: 'string',
+    description: 'User courses',
+    default: 'course id optional',
+  })
+  @IsString()
+  @IsOptional()
+  courses: Course[];
 }

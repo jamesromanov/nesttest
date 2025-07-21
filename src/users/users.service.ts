@@ -9,15 +9,22 @@ import { RedisService } from 'src/redis/redis.service';
 import { PassThrough } from 'stream';
 import { UpdateUserDto } from 'src/dtos/update-user.dto';
 import { compareSync } from 'bcrypt';
+import { CourseService } from 'src/course/course.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private redis: RedisService,
+    private courseService: CourseService,
   ) {}
   // creating user
   async create(createUserDto: CreateUserDto) {
+    if (createUserDto.courses) {
+      const coueseExists = await this.courseService.findMany(
+        createUserDto.courses as any,
+      );
+    }
     const user = await this.userModel.create(createUserDto);
     return user.toJSON();
   }
