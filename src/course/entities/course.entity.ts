@@ -2,6 +2,7 @@ import { Param } from '@nestjs/common';
 import { Prop } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { now } from 'mongoose';
 
 export class Course {
   // course title
@@ -16,4 +17,10 @@ export class Course {
   // course enddate
   @Prop()
   endDate: Date;
+  // course created time
+  @Prop({ default: now() })
+  createdAt: Date;
+  // course updated time
+  @Prop({ default: now() })
+  updatedAt: Date;
 }
