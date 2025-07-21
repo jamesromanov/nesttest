@@ -1,9 +1,10 @@
 import { Param } from '@nestjs/common';
-import { Prop } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { now } from 'mongoose';
 
+@Schema({ timestamps: true })
 export class Course {
   // course title
   @Prop()
@@ -24,3 +25,5 @@ export class Course {
   @Prop({ default: now() })
   updatedAt: Date;
 }
+
+export const CourseSchema = SchemaFactory.createForClass(Course);
