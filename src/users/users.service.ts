@@ -17,7 +17,7 @@ export class UsersService {
   // creating user
   async create(createUserDto: CreateUserDto) {
     const user = await this.userModel.create(createUserDto);
-    return user;
+    return user.toJSON();
   }
   // get all users
   async findAll() {
@@ -30,8 +30,13 @@ export class UsersService {
   }
 
   // get user by id
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    const userCache = await this.redis.get(`user:id:${id}`);
+    if (userCache) JSON.parse(userCache);
+    const user = await this.userModel.findOne({ id });
+    if (!user) throw new NotFoundException('No users found');
+    await this.redis.set(`user:id:${id}`, user, 60);
+    return user.toJSON();
   }
 
   update(id: number, updateUserDto: any) {

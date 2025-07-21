@@ -36,6 +36,11 @@ export class User {
   // user updated time
   @Prop({ default: now() })
   updatedAt: Date;
+
+  toJson() {
+    const { password, refreshToken, ...rest } = this;
+    return rest;
+  }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
