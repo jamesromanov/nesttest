@@ -5,12 +5,11 @@ import {
   IsOptional,
   IsString,
   MaxLength,
-  MinLength,
 } from 'class-validator';
 import { TaskStatus } from 'src/enums/task.status.enum';
 import { User } from 'src/users/entities/user.entity';
 
-export class CreateTaskDto {
+export class UpdateTaskDto {
   // Task title
   @ApiProperty({
     type: 'string',
@@ -18,9 +17,9 @@ export class CreateTaskDto {
     default: 'new course title',
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(3)
-  title: string;
+  @IsOptional()
+  @MaxLength(3)
+  title?: string;
 
   // Task description
   @ApiProperty({
@@ -30,7 +29,7 @@ export class CreateTaskDto {
   })
   @IsString()
   @IsOptional()
-  description: string;
+  description?: string;
 
   // Task status
   @ApiProperty({
@@ -39,8 +38,9 @@ export class CreateTaskDto {
     default: TaskStatus.PENDING,
   })
   @IsEnum(TaskStatus)
+  @IsOptional()
   @IsString()
-  status: TaskStatus;
+  status?: TaskStatus;
 
   // Task due data
   @ApiProperty({
@@ -49,7 +49,8 @@ export class CreateTaskDto {
     description: 'Task due date',
   })
   @IsString()
-  dueDate: Date;
+  @IsOptional()
+  dueDate?: Date;
 
   // user who created task
   @ApiProperty({
@@ -57,6 +58,7 @@ export class CreateTaskDto {
     default: 'user id',
     description: 'Task id',
   })
+  @IsOptional()
   @IsString()
-  createdBy: User;
+  createdBy?: User;
 }

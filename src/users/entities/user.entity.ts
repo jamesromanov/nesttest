@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { compareSync, hashSync } from 'bcrypt';
 import { Transform } from 'class-transformer';
-import { now } from 'mongoose';
+import { now, Types } from 'mongoose';
 import { UserRole } from 'src/enums/user.role';
+import { Task } from 'src/task/entities/task.entity';
 
 // USER model
 @Schema({ timestamps: true })
@@ -43,6 +44,9 @@ export class User {
   // user updated time
   @Prop({ default: now() })
   updatedAt: Date;
+  // user tasks
+  @Prop({ type: [Types.ObjectId], ref: Task.name })
+  tokens: Task[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

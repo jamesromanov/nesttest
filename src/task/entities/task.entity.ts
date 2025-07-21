@@ -1,5 +1,5 @@
-import { Prop, Schema } from '@nestjs/mongoose';
-import { now, Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose, { now, Types } from 'mongoose';
 import { TaskStatus } from 'src/enums/task.status.enum';
 import { User } from 'src/users/entities/user.entity';
 
@@ -18,7 +18,7 @@ export class Task {
   @Prop()
   dueDate: Date;
   // user who created task
-  @Prop({ type: Types.ObjectId })
+  @Prop({ type: Types.ObjectId, ref: 'User' })
   createdBy: User;
   // task created time
   @Prop({ default: now() })
@@ -27,3 +27,5 @@ export class Task {
   @Prop({ default: now() })
   updatedAt: Date;
 }
+
+export const TaskSchema = SchemaFactory.createForClass(Task);
