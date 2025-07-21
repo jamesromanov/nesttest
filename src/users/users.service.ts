@@ -58,6 +58,7 @@ export class UsersService {
     return updatedUser;
   }
 
+  // delete user by id
   async remove(id: string) {
     const userExists = await this.findOne(id);
     console.log(await this.update(id, { isActive: false }));
