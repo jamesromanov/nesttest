@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './filters/global.exception.filter';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { GlobalExceptionFilter } from './filters/global.exception.filter';
     AuthModule,
     UsersModule,
     MongooseModule.forRoot(process.env.DATABASE_URL as string),
+    TaskModule,
   ],
   controllers: [],
   providers: [
