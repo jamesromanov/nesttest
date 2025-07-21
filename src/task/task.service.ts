@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateTaskDto } from 'src/dtos/create-task.dto';
 import { UpdateTaskDto } from 'src/dtos/update-task.dto';
 import { Task } from './entities/task.entity';
 import { Model } from 'mongoose';
 import { UsersService } from 'src/users/users.service';
-import { reduce } from 'rxjs';
+import { NotFoundError, reduce } from 'rxjs';
 import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
@@ -15,6 +15,7 @@ export class TaskService {
     private userService: UsersService,
     private redis: RedisService,
   ) {}
+  // create task
   async create(createTaskDto: CreateTaskDto) {
     const userId = createTaskDto.createdBy as any;
     const userExists = await this.userService.findOne(userId);
@@ -26,13 +27,24 @@ export class TaskService {
     await this.redis.del('tasks:all');
     return task;
   }
+  // get all tasks
+  async findAll() {
+    const taskCache = await this.redis.get(`tasks:all`);
+    if (taskCache) return JSON.parse(taskCache);
 
-  findAll() {
-    return `This action returnns all task`;
+    const tasks = await this.taskModel.find();
+    if (tasks.length === 0) throw new NotFoundException('No tasks found');
+    await this.redis.set(`tasks:all`, tasks, 60);
+    return tasks;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  async findOne(id: number) {
+    const taskCache = await this.redis.get(`task:id:${id}`);
+    if (taskCache) return JSON.parse(taskCache);
+    const taskExists = await this.taskModel.findById(id);
+    if (!taskExists) throw new NotFoundException('No tasks found');
+    await this.redis.set(`task:id:${id}`, taskExists, 60);
+    return taskExists;
   }
 
   update(id: number, updateTaskDto: UpdateTaskDto) {
