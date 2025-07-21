@@ -32,26 +32,43 @@ export class TaskService {
     const taskCache = await this.redis.get(`tasks:all`);
     if (taskCache) return JSON.parse(taskCache);
 
-    const tasks = await this.taskModel.find();
+    const tasks = await this.taskModel.find({ isActive: true });
     if (tasks.length === 0) throw new NotFoundException('No tasks found');
     await this.redis.set(`tasks:all`, tasks, 60);
     return tasks;
   }
-
-  async findOne(id: number) {
+  // get task by id
+  async findOne(id: string) {
     const taskCache = await this.redis.get(`task:id:${id}`);
+    console.log(taskCache);
     if (taskCache) return JSON.parse(taskCache);
-    const taskExists = await this.taskModel.findById(id);
+    const taskExists = await this.taskModel.findOne({
+      _id: id,
+      isActive: true,
+    });
     if (!taskExists) throw new NotFoundException('No tasks found');
     await this.redis.set(`task:id:${id}`, taskExists, 60);
     return taskExists;
   }
-
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+  //  update task by id
+  async update(id: string, updateTaskDto: UpdateTaskDto) {
+    const tasksExists = await this.findOne(id);
+    const updatedTask = await this.taskModel.findByIdAndUpdate(
+      tasksExists._id,
+      updateTaskDto,
+      {
+        new: true,
+      },
+    );
+    await this.redis.del(`task:id:${id}`);
+    return updatedTask;
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} task`;
+  // delete task by id
+  async remove(id: string) {
+    const tasksExists = await this.findOne(id);
+    await this.update(tasksExists.id, { isActive: false });
+    await this.redis.del(`task:id:${id}`);
+    await this.redis.del(`tasks:all`);
+    return 'Successfully deleted';
   }
 }

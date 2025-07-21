@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
+  MinLength,
 } from 'class-validator';
 import { TaskStatus } from 'src/enums/task.status.enum';
 import { User } from 'src/users/entities/user.entity';
@@ -18,7 +20,7 @@ export class UpdateTaskDto {
   })
   @IsString()
   @IsOptional()
-  @MaxLength(3)
+  @MinLength(3)
   title?: string;
 
   // Task description
@@ -61,4 +63,8 @@ export class UpdateTaskDto {
   @IsOptional()
   @IsString()
   createdBy?: User;
+
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
 }

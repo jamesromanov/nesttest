@@ -20,6 +20,9 @@ export class Task {
   // user who created task
   @Prop({ type: Types.ObjectId, ref: 'User' })
   createdBy: User;
+  // task status
+  @Prop({ default: true })
+  isActive: boolean;
   // task created time
   @Prop({ default: now() })
   createdAt: Date;

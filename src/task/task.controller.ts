@@ -68,7 +68,7 @@ export class TaskController {
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.taskService.findOne(+id);
+    return this.taskService.findOne(id);
   }
 
   // [PUT] update book by id
@@ -84,7 +84,7 @@ export class TaskController {
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.taskService.update(+id, updateTaskDto);
+    return this.taskService.update(id, updateTaskDto);
   }
   // [DELETE] delete task by id
   @ApiOperation({
@@ -99,6 +99,6 @@ export class TaskController {
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.taskService.remove(+id);
+    return this.taskService.remove(id);
   }
 }
