@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { Mongoose } from 'mongoose';
@@ -18,9 +16,8 @@ import { GlobalExceptionFilter } from './filters/global.exception.filter';
     UsersModule,
     MongooseModule.forRoot(process.env.DATABASE_URL as string),
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,
