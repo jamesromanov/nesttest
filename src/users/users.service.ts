@@ -8,6 +8,7 @@ import { NotFoundError } from 'rxjs';
 import { RedisService } from 'src/redis/redis.service';
 import { PassThrough } from 'stream';
 import { UpdateUserDto } from 'src/dtos/update-user.dto';
+import { compareSync } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -24,7 +25,7 @@ export class UsersService {
   async findAll() {
     const usersCache = await this.redis.get(`all:users`);
     if (usersCache) return JSON.parse(usersCache);
-    const users = await this.userModel.find({ isActive: true });
+    const users = await this.userModel.find();
     if (users.length === 0) throw new NotFoundException('No users found');
     await this.redis.set(`all:users`, users, 60);
     return users;
@@ -45,18 +46,24 @@ export class UsersService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     const userExists = await this.findOne(id);
     const updatedUser = await this.userModel.findByIdAndUpdate(
-      id,
+      userExists._id,
       updateUserDto,
       {
         new: true,
       },
     );
     await this.redis.del(`user:id:${id}`);
+    await this.redis.del(`all:users`);
 
     return updatedUser;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    const userExists = await this.findOne(id);
+    console.log(await this.update(id, { isActive: false }));
+    await this.redis.del(`user:id:${id}`);
+    await this.redis.del(`all:users`);
+
+    return 'successfully deleted';
   }
 }

@@ -23,7 +23,8 @@ export class User {
   @Prop({
     required: true,
     set: (value: string) => {
-      if (value !== undefined) return hashSync(value, 12);
+      if (value !== undefined || !(value as string).startsWith('$2b$'))
+        return hashSync(value, 12);
     },
   })
   password: string;
@@ -42,15 +43,6 @@ export class User {
   // user updated time
   @Prop({ default: now() })
   updatedAt: Date;
-
-  toJson() {
-    const { password, refreshToken, ...rest } = this;
-    return rest;
-  }
-
-  compare(password: string) {
-    return compareSync(password, this.password);
-  }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
