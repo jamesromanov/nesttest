@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { hashSync } from 'bcrypt';
 import { now } from 'mongoose';
 import { UserRole } from 'src/enums/user.role';
 
@@ -15,10 +16,10 @@ export class User {
   @Prop({ required: false })
   age: number;
   // user email
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   email: string;
   // user password
-  @Prop({ required: true })
+  @Prop({ required: true, set: (value: string) => hashSync(value, 12) })
   password: string;
   // user role
   @Prop({ enum: UserRole, type: String })
