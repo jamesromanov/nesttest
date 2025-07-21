@@ -44,15 +44,16 @@ export class UsersService {
   //  update user by id
   async update(id: string, updateUserDto: UpdateUserDto) {
     const userExists = await this.findOne(id);
-    const upatedUser = await this.userModel.findByIdAndUpdate(
+    const updatedUser = await this.userModel.findByIdAndUpdate(
       id,
       updateUserDto,
       {
         new: true,
       },
     );
+    await this.redis.del(`user:id:${id}`);
 
-    return upatedUser;
+    return updatedUser;
   }
 
   remove(id: number) {
