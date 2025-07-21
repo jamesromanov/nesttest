@@ -67,4 +67,14 @@ export class UsersService {
 
     return 'successfully deleted';
   }
+
+  // user find by email
+  async findByEmail(email: string) {
+    const userCache = await this.redis.get(`user:email:${email}`);
+    if (userCache) JSON.parse(userCache);
+    const userExists = await this.userModel.findOne({ email });
+    if (!userExists) throw new NotFoundError('User not found');
+    await this.redis.set(`user:email:${email}`, userExists, 60);
+    return userExists;
+  }
 }
