@@ -36,7 +36,7 @@ ACCESS_TOKEN_KEY=access-token-key
 ACCESS_TOKEN_EXP=access-token-expiration-time
 REFRESH_TOKEN_KEY=refresh-token-key
 REFRESH_TOKEN_EXP=refresh-token-expiration-time
-COOKIE_EXP=7*24*3600000
+COOKIE_EXP=cookie-expiration-time
 ```
 
 ```bash
@@ -68,4 +68,5 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
 # nesttest
