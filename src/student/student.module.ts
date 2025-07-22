@@ -4,6 +4,7 @@ import { StudentController } from './student.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Student, StudentSchema } from './entities/student.entity';
 import { CourseModule } from 'src/course/course.module';
+import { RedisService } from 'src/redis/redis.service';
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { CourseModule } from 'src/course/course.module';
     MongooseModule.forFeature([{ name: Student.name, schema: StudentSchema }]),
   ],
   controllers: [StudentController],
-  providers: [StudentService],
+  providers: [StudentService, RedisService],
   exports: [StudentService],
 })
 export class StudentModule {}
