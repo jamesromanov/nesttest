@@ -27,6 +27,12 @@
 
 ## Project setup
 
+Project can also be run with docker
+
+```bash
+docker compose up
+```
+
 ```bash
 .env
 DATABASE_URL=mongodb-database-url
