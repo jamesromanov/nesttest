@@ -17,6 +17,12 @@ services:
       - ./docker/mongodb_data:/data/db
       - ./docker/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
 
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - 6389:6379
+
   app:
     build:
       context: .
