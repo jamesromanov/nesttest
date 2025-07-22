@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -19,13 +23,19 @@ export class UsersService {
     private courseService: CourseService,
   ) {}
   // creating user
-  async create(createUserDto: CreateUserDto) {
-    if (createUserDto.courses) {
-      const coueseExists = await this.courseService.findMany(
-        createUserDto.courses as any,
-      );
+  async create(createUserDto: CreateUserDto, courseId?: string) {
+    if (courseId) {
+      const userExists = await this.userModel.findOne({
+        courses: courseId,
+        email: createUserDto.email,
+      });
+      if (userExists) throw new BadRequestException('Allready enrolled');
+      await this.courseService.findOne(courseId);
     }
-    const user = await this.userModel.create(createUserDto);
+    const user = await this.userModel.create({
+      ...createUserDto,
+      courses: courseId,
+    });
     return user.toJSON();
   }
   // get all users
@@ -83,5 +93,10 @@ export class UsersService {
     if (!userExists) throw new NotFoundError('User not found');
     await this.redis.set(`user:email:${email}`, userExists, 60);
     return userExists;
+  }
+
+  // user find by course id
+  async getUserByCourseId(courseId: string) {
+    // const userExists = await
   }
 }

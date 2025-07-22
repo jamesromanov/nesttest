@@ -48,9 +48,7 @@ export class User {
   // user tasks
   @Prop({ type: [Types.ObjectId], ref: Task.name })
   task: Task[];
-  // user courses
-  @Prop({ type: [Types.ObjectId], required: false, ref: 'Course' })
-  courses?: Course[];
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

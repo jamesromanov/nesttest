@@ -87,13 +87,4 @@ export class CreateUserDto {
   @IsOptional()
   @IsEnum(UserRole, { message: 'Roles must be ADMIN or USER' })
   role?: UserRole;
-
-  @ApiProperty({
-    type: 'string',
-    description: 'User courses',
-    default: 'course id optional',
-  })
-  @IsString()
-  @IsOptional()
-  courses: Course[];
 }

@@ -16,15 +16,24 @@ export class CourseService {
   // course create
   async create(createCourseDto: CreateCourseDto) {
     const course = await this.courseModel.create(createCourseDto);
+    await this.redis.del(`courses:all`);
     return course;
   }
-
-  findAll() {
-    return `This action returns all course`;
+  // get available courses
+  async findAll() {
+    const coursesCache = await this.redis.get(`courses:all`);
+    if (coursesCache) return JSON.parse(coursesCache);
+    const courses = await this.courseModel.find();
+    await this.redis.set(`courses:all`, courses, 60);
+    return courses;
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} course`;
+  // findone course by id
+  async findOne(id: string) {
+    const courseCache = await this.redis.get(`course:id:${id}`);
+    if (courseCache) JSON.parse(courseCache);
+    const course = await this.courseModel.findById(id);
+    await this.redis.set(`course:id:${id}`, course, 60);
+    return course;
   }
 
   update(id: number, updateCourseDto: UpdateCourseDto) {
@@ -35,12 +44,11 @@ export class CourseService {
     return `This action removes a #${id} course`;
   }
 
-  async findMany(ids: string[]) {
-    const coursesExists = await this.courseModel.find({ _id: ids });
+  async findMany(ids: string[] | string) {
+    const coursesExists = await this.courseModel.findById(ids);
 
     console.log(coursesExists);
-    if (coursesExists.length === 0)
-      throw new NotFoundException('No courses found');
+    if (!coursesExists) throw new NotFoundException('No courses found');
     return coursesExists;
   }
 }

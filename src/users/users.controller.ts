@@ -15,20 +15,53 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiConflictResponse,
+  ApiCreatedResponse,
   ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
-@Controller('users')
+@Controller()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   // [POST] user create
-  @Post()
+  @ApiOperation({
+    summary: 'create user or student admin',
+    description: 'create user or admin and  student',
+  })
+  @ApiCreatedResponse({
+    description: 'succeddfully created',
+  })
+  @ApiBadRequestResponse({ description: 'Invalid data entered' })
+  @ApiNotFoundResponse({ description: 'Not found error' })
+  @ApiConflictResponse({ description: 'Conflict error' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @Post('users')
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
+  }
+  // [POST] create student with course id
+  @ApiOperation({
+    summary: 'create student',
+    description: 'create student',
+  })
+  @ApiCreatedResponse({
+    description: 'succeddfully created',
+  })
+  @ApiBadRequestResponse({ description: 'Invalid data entered' })
+  @ApiNotFoundResponse({ description: 'Not found error' })
+  @ApiConflictResponse({ description: 'Conflict error' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @Post('courses/:courseId/register')
+  createStudent(
+    @Param('courseId') courseId: string,
+    @Body() createCourseDto: CreateUserDto,
+  ) {
+    return this.usersService.create(createCourseDto, courseId);
   }
   // [GET] get all users
   @ApiBearerAuth()
@@ -40,7 +73,7 @@ export class UsersController {
   @ApiConflictResponse({ description: 'Conflict error' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  @Get()
+  @Get('users')
   findAll() {
     return this.usersService.findAll();
   }
@@ -57,7 +90,7 @@ export class UsersController {
     description: 'Invalid data entered',
   })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  @Get(':id')
+  @Get('users/id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
@@ -74,13 +107,13 @@ export class UsersController {
     description: 'Invalid data entered',
   })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  @Put(':id')
+  @Put('users/id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
   // [DELETE] delete user by id
 
-  @Delete(':id')
+  @Delete('users/id')
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'delete book by id by their id admins and users',
@@ -96,4 +129,15 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
+
+  @ApiOperation({
+    summary: 'get course by id',
+    description: 'get course by id',
+  })
+  @ApiCreatedResponse({ description: 'reqturned successfully' })
+  @ApiBadRequestResponse({ description: 'Invalid data enetered' })
+  @ApiUnauthorizedResponse({ description: 'Unathorized' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @Get('students/:id/courses')
+  find(@Param('id') id: string) {}
 }

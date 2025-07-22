@@ -17,10 +17,11 @@ import {
   ApiInternalServerErrorResponse,
   ApiOperation,
   ApiProxyAuthenticationRequiredResponse,
+  ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
-@Controller('course')
+@Controller()
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
@@ -30,19 +31,33 @@ export class CourseController {
   @ApiBadRequestResponse({ description: 'Invalid data enetered' })
   @ApiUnauthorizedResponse({ description: 'Unathorized' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  @Post()
+  @Post('course')
   create(@Body() createCourseDto: CreateCourseDto) {
     return this.courseService.create(createCourseDto);
   }
 
-  @Get()
+  @ApiOperation({ summary: 'get courses', description: 'get courses' })
+  @ApiCreatedResponse({ description: 'reqturned successfully' })
+  @ApiBadRequestResponse({ description: 'Invalid data enetered' })
+  @ApiUnauthorizedResponse({ description: 'Unathorized' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @Get('course')
   findAll() {
     return this.courseService.findAll();
   }
 
-  @Get(':id')
+  @ApiOperation({
+    summary: 'get course by id',
+    description: 'get course by id',
+  })
+  @ApiTags('Course')
+  @ApiCreatedResponse({ description: 'reqturned successfully' })
+  @ApiBadRequestResponse({ description: 'Invalid data enetered' })
+  @ApiUnauthorizedResponse({ description: 'Unathorized' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @Get('students/id/course')
   findOne(@Param('id') id: string) {
-    return this.courseService.findOne(+id);
+    return this.courseService.findOne(id);
   }
 
   @Patch(':id')
