@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateStudentDto } from '../dtos/create-student.dto';
-import { UpdateStudentDto } from './dto/update-student.dto';
+import { UpdateStudentDto } from 'src/dtos/update-student.dto';
 
 @Injectable()
 export class StudentService {
+  constructor() {}
   create(createStudentDto: CreateStudentDto) {
     return 'This action adds a new student';
   }

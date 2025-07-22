@@ -1,4 +1,4 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now, Types } from 'mongoose';
 import { Course } from 'src/course/entities/course.entity';
 
@@ -13,6 +13,9 @@ export class Student {
   // student courses
   @Prop({ type: Types.ObjectId, ref: 'Course' })
   courses: Course;
+  // student status
+  @Prop({ default: true })
+  isActive: boolean;
   // student created time
   @Prop({ default: now() })
   createdAt: Date;
@@ -20,3 +23,5 @@ export class Student {
   @Prop({ default: now() })
   updatedAt: Date;
 }
+
+export const StudentSchema = SchemaFactory.createForClass(Student);

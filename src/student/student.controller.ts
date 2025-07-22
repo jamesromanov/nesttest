@@ -10,12 +10,30 @@ import {
 import { StudentService } from './student.service';
 import { CreateStudentDto } from '../dtos/create-student.dto';
 import { UpdateStudentDto } from 'src/dtos/update-student.dto';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 
-@Controller('student')
+@Controller('students')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
-  @Post()
+  @ApiOperation({
+    summary: 'register student',
+    description: 'registering student',
+  })
+  @ApiCreatedResponse({ description: 'Successfully created!' })
+  @ApiNotFoundResponse({ description: 'Not found error' })
+  @ApiBadRequestResponse({ description: 'Invalid data entered' })
+  @ApiConflictResponse({ description: 'Conflict response' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @Post('register')
   create(@Body() createStudentDto: CreateStudentDto) {
     return this.studentService.create(createStudentDto);
   }
