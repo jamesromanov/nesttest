@@ -11,8 +11,8 @@ export class Student {
   @Prop()
   password: string;
   // student courses
-  @Prop({ type: Types.ObjectId, ref: 'Course' })
-  courses: Course;
+  @Prop({ type: [Types.ObjectId], ref: 'Course' })
+  courses: Course[];
   // student status
   @Prop({ default: true })
   isActive: boolean;

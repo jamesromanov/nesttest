@@ -18,12 +18,13 @@ import {
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 
-@Controller('students')
+@Controller()
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
-
+  // [POST] register student
   @ApiOperation({
     summary: 'register student',
     description: 'registering student',
@@ -33,28 +34,39 @@ export class StudentController {
   @ApiBadRequestResponse({ description: 'Invalid data entered' })
   @ApiConflictResponse({ description: 'Conflict response' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  @Post('register')
+  @Post('students/register')
   create(@Body() createStudentDto: CreateStudentDto) {
     return this.studentService.create(createStudentDto);
   }
-
-  @Get()
-  findAll() {
-    return this.studentService.findAll();
+  // [POST] enroll student with course id
+  @ApiOperation({
+    summary: 'enroll student',
+    description: 'enroll student',
+  })
+  @ApiCreatedResponse({ description: 'Successfully enrolled!' })
+  @ApiNotFoundResponse({ description: 'Not found error' })
+  @ApiBadRequestResponse({ description: 'Invalid data entered' })
+  @ApiConflictResponse({ description: 'Conflict response' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @Post('courses/:courseId/register/:studentId')
+  enrollStudent(
+    @Param('courseId') couerseId: string,
+    @Param('studentId') studentId: string,
+  ) {
+    return this.studentService.enrollStudent(studentId, couerseId);
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.studentService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
-    return this.studentService.update(+id, updateStudentDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.studentService.remove(+id);
+  // [GET] get courses students
+  @ApiOperation({
+    summary: 'get enrolled students',
+    description: 'get entrolled students',
+  })
+  @ApiCreatedResponse({ description: 'Successfully returned!' })
+  @ApiNotFoundResponse({ description: 'Not found error' })
+  @ApiBadRequestResponse({ description: 'Invalid data entered' })
+  @ApiConflictResponse({ description: 'Conflict response' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error' })
+  @Get('/students/:id/courses/get')
+  findById(@Param('id') id: string) {
+    return this.studentService.findById(id);
   }
 }
