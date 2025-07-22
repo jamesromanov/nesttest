@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
@@ -22,7 +24,14 @@ import {
 import { IsString } from 'class-validator';
 import { CreateTaskDto } from 'src/dtos/create-task.dto';
 import { UpdateTaskDto } from 'src/dtos/update-task.dto';
+import { JwtGuard } from 'src/guards/jwt.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/guards/roles';
+import { UserRole } from 'src/enums/user.role';
 
+@ApiBearerAuth()
+@UseGuards(JwtGuard, RolesGuard)
+@Roles(UserRole.ADMIN)
 @Controller('task')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}

@@ -36,7 +36,7 @@ export class AuthService {
 
     const userExists = await this.userService.findByEmail(email);
     console.log(userExists);
-    if (!userExists || userExists.role !== UserRole.USER)
+    if (!userExists)
       throw new NotFoundException('Password or email is incorrect');
 
     if (userCache) user = JSON.parse(userCache);

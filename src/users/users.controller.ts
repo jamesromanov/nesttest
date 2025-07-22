@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from 'src/dtos/create-user.dto';
@@ -20,9 +21,13 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { JwtGuard } from 'src/guards/jwt.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/guards/roles';
+import { UserRole } from 'src/enums/user.role';
+import { userInfo } from 'os';
 
 @Controller()
 export class UsersController {
@@ -64,6 +69,8 @@ export class UsersController {
     return this.usersService.create(createCourseDto, courseId);
   }
   // [GET] get all users
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'get all users for the admins',
@@ -78,6 +85,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
   // [GET] get user by their id
+  @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'get user by id for admins and users',
@@ -90,11 +98,13 @@ export class UsersController {
     description: 'Invalid data entered',
   })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
-  @Get('users/id')
+  @Get('users/:id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
   // [PUT] update user by their id
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'update user by id admins and users',
@@ -112,7 +122,8 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
   // [DELETE] delete user by id
-
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Delete('users/id')
   @ApiBearerAuth()
   @ApiOperation({
@@ -130,6 +141,9 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'get course by id',
     description: 'get course by id',

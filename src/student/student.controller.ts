@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from '../dtos/create-student.dto';
@@ -20,7 +21,13 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { UserRole } from 'src/enums/user.role';
+import { JwtGuard } from 'src/guards/jwt.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/guards/roles';
 
+@ApiBearerAuth()
+@UseGuards(JwtGuard, RolesGuard)
 @Controller()
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
